@@ -16,6 +16,7 @@ import io.katharsis.rs.parameterProvider.JaxRsParameterProvider;
 import io.katharsis.rs.parameterProvider.RequestContextParameterProviderRegistry;
 import io.katharsis.rs.type.JsonApiMediaType;
 
+import javax.ws.rs.NotSupportedException;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.container.ContainerRequestContext;
 import javax.ws.rs.container.ContainerRequestFilter;
@@ -76,7 +77,7 @@ public class KatharsisFilter implements ContainerRequestFilter {
     @Override
     public void filter(ContainerRequestContext requestContext) throws IOException {
         if (requestContext.hasEntity() && !requestContext.getMediaType().isCompatible(JsonApiMediaType.APPLICATION_JSON_API_TYPE)) {
-            return;
+            throw new NotSupportedException("All requests must use application/vnd.api+json media type");
         }
 
         boolean acceptable = false;
@@ -88,7 +89,7 @@ public class KatharsisFilter implements ContainerRequestFilter {
         }
 
         if (!acceptable) {
-            return;
+            throw new NotSupportedException("All requests must use application/vnd.api+json media type");
         }
 
         try {
